@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Events | Simply Med</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    :root { --link-blue:#053eb0; --ink:#12323a; --muted:#48666e; --border:#e2e8ee; --card:#f6f8fa; --radius:16px; }
+    * { box-sizing:border-box; }
+    html, body { height:100%; }
+    body { margin:0; font-family:'Inter',sans-serif; color:var(--ink); background:#fff; }
+
+    /* ===== Header / Nav ===== */
+    header{
+      position:fixed; top:0; left:0; right:0; z-index:1000;
+      height:70px; display:flex; align-items:center; justify-content:center;
+      padding:0 16px; background:#fff; border-bottom:1px solid #ccc;
+      box-shadow:0 2px 12px rgba(0,0,0,.06);
+    }
+    .brand{
+      position:absolute; left:16px;
+      display:flex; align-items:center; gap:8px;
+      text-decoration:none;
+    }
+    .brand-mark{ width:45px; height:45px; object-fit:contain; }
+    .brand-text{
+      font-family:'Playfair Display',serif; font-size:22px; font-weight:700; color:#000; line-height:1;
+    }
+
+    nav.primary{ display:flex; gap:50px; }
+    nav.primary a{
+      text-decoration:none; color:var(--link-blue);
+      font-weight:500; font-size:16px; line-height:1; padding:10px 0;
+    }
+    nav.primary a:hover, nav.primary a[aria-current="page"]{
+      text-decoration:underline; text-underline-offset:3px;
+    }
+
+    /* Mobile menu button */
+    .nav-toggle{
+      position:absolute; right:12px; display:none; align-items:center; justify-content:center;
+      width:44px; height:44px; border:0; background:transparent; border-radius:10px;
+    }
+    .nav-toggle:focus-visible{ outline:2px solid #000; outline-offset:2px; }
+
+    /* ===== Top-sheet mobile menu ===== */
+    .mobile-overlay{
+      position:fixed; inset:0; z-index:1100; background:rgba(0,0,0,.35);
+      opacity:0; pointer-events:none; transition:opacity .2s ease; display:none;
+    }
+    .mobile-overlay.open{ opacity:1; pointer-events:auto; display:block; }
+    .mobile-sheet{
+      position:absolute; top:env(safe-area-inset-top,0); left:0; right:0;
+      background:#fff; color:#0b43a3;
+      border-bottom-left-radius:16px; border-bottom-right-radius:16px;
+      padding:10px 14px calc(12px + env(safe-area-inset-bottom,0));
+      box-shadow:0 16px 40px rgba(0,0,0,.18);
+      transform:translateY(-16px); opacity:0; transition:transform .22s ease, opacity .22s ease;
+      max-height:80dvh; overflow:auto;
+    }
+    .mobile-overlay.open .mobile-sheet{ transform:translateY(0); opacity:1; }
+    .mobile-topbar{ display:flex; align-items:center; justify-content:space-between; height:56px; }
+    .mobile-topbar .title{ font-family:'Playfair Display',serif; font-size:22px; color:#0b43a3; margin:0; }
+    .btn-close{ width:44px; height:44px; border:0; background:transparent; border-radius:10px; }
+    .mobile-links a{ display:block; padding:16px 12px; border-radius:12px; font-size:18px; color:#0b43a3; text-decoration:none; font-weight:600; }
+    .mobile-links{ display:flex; flex-direction:column; gap:6px; padding:6px 2px 10px; }
+    .mobile-links a:hover{ background:#eef4ff; }
+    .mobile-divider{ height:1px; background:#e6eefc; margin:8px 0 4px; }
+
+    /* ===== Parallax Hero ===== */
+    main{ padding-top:0; }
+    .hero {
+      position: relative;
+      margin-top: 70px;
+      min-height: 60vh;
+      background: url('images/landing page.jpg') center/cover fixed no-repeat;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      text-align: center; color: #fff;
+    }
+    .hero::before { content:""; position:absolute; inset:0; background:rgba(0,0,0,0.45); z-index:0; }
+    .hero > * { position:relative; z-index:1; }
+    .hero h1{
+      font-family:'Playfair Display',serif;
+      font-size: clamp(40px, 6vw, 64px);
+      line-height:1.1;
+      margin:0 0 40px;
+      color:#fff;
+      text-shadow:0 2px 18px rgba(0,0,0,.35);
+    }
+    .hero p{
+      margin:0; max-width:820px; font-weight:700; color:#fff;
+      text-shadow:0 2px 12px rgba(0,0,0,.35);
+      padding:0 16px; font-size:clamp(10px, 2.2vw, 18px);
+    }
+    @media (max-width: 900px){ .hero{ background-attachment:scroll; } }
+
+    /* ===== Page content ===== */
+    .container{ max-width:1200px; margin:0 auto; padding:0 20px; }
+    .tiles{ display:grid; grid-template-columns:repeat(3,1fr); gap:44px; margin:34px 0 8px; }
+    .tile{text-align:center}
+    .tile img{ width:100%; height:260px; object-fit:cover; border-radius:var(--radius); box-shadow:0 10px 30px rgba(0,0,0,.08); }
+    .tile h3{ font-size:38px; margin:16px 0 8px; color:var(--ink); }
+    .btn{ display:inline-block; margin-top:8px; padding:12px 20px; border-radius:12px; background:#eef2f7; color:#0b43a3; text-decoration:none; font-weight:600; border:1px solid var(--border); }
+    .btn:hover{ filter:brightness(.98); }
+
+    /* Lists */
+    section.list{ padding:54px 0; border-top:1px solid var(--border); }
+    .section-title{ font-family:'Playfair Display',serif; font-size:40px; margin:0 0 18px; color:var(--ink); }
+    .events-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:22px; }
+    .event{ background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:18px; display:grid; gap:8px; }
+    .event h4{ margin:0; font-size:18px; }
+    .meta{ font-size:14px; color:var(--muted); }
+    .event a{ justify-self:start; text-decoration:none; font-weight:600; color:#0b43a3; }
+    .anchor{ scroll-margin-top:100px; }
+
+    /* Responsive */
+    @media (max-width:1000px){ .events-grid{ grid-template-columns:repeat(2,1fr); } }
+    @media (max-width:860px){
+      nav.primary{ display:none; }
+      .nav-toggle{ display:flex; }
+      .tiles{ grid-template-columns:1fr; gap:26px; }
+    }
+
+    .sr-only{ position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <a class="brand" href="./index.html" aria-label="Simply Med home">
+      <img class="brand-mark" src="images/simply med logo.png" alt="">
+      <span class="brand-text">Simply Med</span>
+    </a>
+
+    <!-- Desktop nav -->
+    <nav class="primary" aria-label="Primary">
+      <a href="./index.html">Home</a>
+      <a href="./about.html">About Us</a>
+      <a href="./events.html" aria-current="page">Events</a>
+      <a href="./blogs.html">Blogs</a>
+      <a href="./contact.html">Contact Us</a>
+    </nav>
+
+    <!-- Mobile menu button (hamburger only) -->
+    <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="mobileOverlay" aria-label="Open menu">
+      <svg id="iconHamburger" width="26" height="26" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M3 6h18M3 12h18M3 18h18" stroke="#0b43a3" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+      <svg id="iconClose" width="26" height="26" viewBox="0 0 24 24" aria-hidden="true" style="display:none">
+        <path d="M6 6l12 12M18 6l-12 12" stroke="#0b43a3" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+      <span class="sr-only">Menu</span>
+    </button>
+  </header>
+
+  <main>
+    <!-- Parallax hero -->
+    <section class="hero">
+      <h1>Events</h1>
+      <p>Browse current programming, look ahead to what’s coming, or catch up on past highlights.</p>
+    </section>
+
+    <div class="container">
+      <!-- Category tiles -->
+      <div class="tiles" aria-label="Event categories">
+        <article class="tile">
+          <img src="images/past events.jpg" alt="Calendar flipping">
+          <h3>Past Events</h3>
+          <a class="btn" href="#past">SEE MORE</a>
+        </article>
+        <article class="tile">
+          <img src="images/current events.png" alt="Clinician holding phones">
+          <h3>Current Events</h3>
+          <a class="btn" href="#current">SEE MORE</a>
+        </article>
+        <article class="tile">
+          <img src="images/future events.png" alt="Pins on calendar">
+          <h3>Future Events</h3>
+          <a class="btn" href="#future">SEE MORE</a>
+        </article>
+      </div>
+    </div>
+
+    <!-- Lists (Current first) -->
+    <section id="current" class="list anchor">
+      <div class="container">
+        <h2 class="section-title">Current Events</h2>
+        <div class="events-grid">
+          <div class="event">
+            <h4>Grand Rounds: Updates in Cardio-Oncology</h4>
+            <div class="meta">Wednesdays in September • 12:00–1:00 PM • Auditorium B</div>
+            <p>Weekly series covering emerging evidence and case discussions.</p>
+            <a href="#">Details</a>
+          </div>
+          <div class="event">
+            <h4>Clinical Skills Workshop: Point-of-Care Ultrasound</h4>
+            <div class="meta">Sept 21 • 9:00 AM–3:00 PM • Simulation Lab</div>
+            <p>Hands-on scanning with small-group faculty coaching.</p>
+            <a href="#">Details</a>
+          </div>
+          <div class="event">
+            <h4>Public Lecture: AI for Safer Medication Use</h4>
+            <div class="meta">Sept 28 • 6:30–7:30 PM • Online</div>
+            <p>How decision support tools are shaping prescribing in 2025.</p>
+            <a href="#">Details</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="future" class="list anchor">
+      <div class="container">
+        <h2 class="section-title">Future Events</h2>
+        <div class="events-grid">
+          <div class="event">
+            <h4>Annual Research Day</h4>
+            <div class="meta">Oct 18 • 8:30 AM–5:00 PM • Main Campus</div>
+            <p>Poster sessions, lightning talks, and keynote address.</p>
+            <a href="#">Details</a>
+          </div>
+          <div class="event">
+            <h4>Workshop: Communicating with Empathy</h4>
+            <div class="meta">Nov 4 • 1:00–4:00 PM • Room 310</div>
+            <p>Evidence-based strategies for patient-centered language.</p>
+            <a href="#">Details</a>
+          </div>
+          <div class="event">
+            <h4>Journal Club Live</h4>
+            <div class="meta">Nov 20 • 6:00–7:15 PM • Online</div>
+            <p>Interactive discussion of a high-impact clinical trial.</p>
+            <a href="#">Details</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="past" class="list anchor">
+      <div class="container">
+        <h2 class="section-title">Past Events</h2>
+        <div class="events-grid">
+          <div class="event">
+            <h4>Spring CME Symposium</h4>
+            <div class="meta">May 2025 • Conference Centre</div>
+            <p>Multidisciplinary updates across internal medicine.</p>
+            <a href="#">View recap</a>
+          </div>
+          <div class="event">
+            <h4>Resident Teaching Day</h4>
+            <div class="meta">April 2025 • Education Wing</div>
+            <p>Teaching pearls, OSCE tips, and micro-teaching practice.</p>
+            <a href="#">View recap</a>
+          </div>
+          <div class="event">
+            <h4>Community Health Fair</h4>
+            <div class="meta">March 2025 • City Hall</div>
+            <p>Free screenings and health literacy workshops.</p>
+            <a href="#">View recap</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Mobile overlay sheet -->
+  <div class="mobile-overlay" id="mobileOverlay" aria-hidden="true">
+    <div class="mobile-sheet" role="dialog" aria-modal="true">
+      <div class="mobile-topbar">
+        <h2 class="title">Simply Med</h2>
+        <button class="btn-close" id="btnClose" aria-label="Close menu">✕</button>
+      </div>
+      <div class="mobile-links">
+        <a href="./index.html">Home</a>
+        <a href="./about.html">About Us</a>
+        <a href="./events.html" aria-current="page">Events</a>
+        <a href="./blogs.html">Blogs</a>
+        <a href="./contact.html">Contact Us</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function(){
+      const toggle = document.getElementById('navToggle');
+      const overlay = document.getElementById('mobileOverlay');
+      const btnClose = document.getElementById('btnClose');
+      const iconHamburger = document.getElementById('iconHamburger');
+      const iconClose = document.getElementById('iconClose');
+      let lastFocus = null;
+
+      function openMenu(){
+        lastFocus = document.activeElement;
+        overlay.classList.add('open');
+        overlay.setAttribute('aria-hidden','false');
+        toggle.setAttribute('aria-expanded','true');
+        iconHamburger.style.display='none';
+        iconClose.style.display='block';
+        document.body.style.overflow='hidden';
+        const first = overlay.querySelector('.mobile-links a');
+        if(first) first.focus();
+      }
+      function closeMenu(){
+        overlay.classList.remove('open');
+        overlay.setAttribute('aria-hidden','true');
+        toggle.setAttribute('aria-expanded','false');
+        iconHamburger.style.display='block';
+        iconClose.style.display='none';
+        document.body.style.overflow='';
+        if (lastFocus) lastFocus.focus();
+      }
+
+      document.addEventListener('DOMContentLoaded', closeMenu);
+      toggle.addEventListener('click', () => overlay.classList.contains('open') ? closeMenu() : openMenu());
+      btnClose.addEventListener('click', closeMenu);
+      overlay.addEventListener('click', (e) => { if (e.target === overlay) closeMenu(); });
+      overlay.addEventListener('click', (e) => { if (e.target.tagName === 'A') closeMenu(); });
+      window.addEventListener('keydown', (e) => { if (e.key === 'Escape' && overlay.classList.contains('open')) closeMenu(); });
+      window.matchMedia('(min-width: 861px)').addEventListener('change', e => { if(e.matches) closeMenu(); });
+    })();
+  </script>
+</body>
+</html>

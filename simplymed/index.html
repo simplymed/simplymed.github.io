@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Simply Med</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    :root { --link-blue:#053eb0; }
+    * { box-sizing:border-box; }
+    body { margin: 0; font-family: Inter, sans-serif; }
+
+    /* ===== Header / Nav (desktop default) ===== */
+    header{
+      position:fixed; top:0; left:0; right:0; z-index:1000;
+      height:70px; display:flex; align-items:center; justify-content:center;
+      padding:0 16px; background:#fff; border-bottom:1px solid #ccc;
+      box-shadow:0 2px 12px rgba(0,0,0,.06);
+    }
+    .brand{
+      position:absolute; left:16px;
+      display:flex; align-items:center; gap:8px;
+      text-decoration:none;
+    }
+    .brand-mark{ width:45px; height:45px; object-fit:contain; }
+    .brand-text{
+      font-family:'Playfair Display',serif; font-size:22px; font-weight:700; color:#000; line-height:1;
+    }
+
+    nav.primary{ display:flex; gap:50px; }
+    nav.primary a{
+      text-decoration:none; color:var(--link-blue);
+      font-weight:500; font-size:16px; line-height:1; padding:10px 0;
+    }
+    nav.primary a:hover, nav.primary a[aria-current="page"]{
+      text-decoration:underline; text-underline-offset:3px;
+    }
+
+    /* Mobile menu button */
+    .nav-toggle{
+      position:absolute; right:12px; display:none; align-items:center; justify-content:center;
+      width:44px; height:44px; border:0; background:transparent; border-radius:10px;
+    }
+    .nav-toggle:focus-visible{ outline:2px solid #000; outline-offset:2px; }
+
+    /* ===== Top-sheet mobile menu ===== */
+    .mobile-overlay{
+      position:fixed; inset:0; z-index:1100;
+      background:rgba(0,0,0,.35);
+      opacity:0; pointer-events:none;
+      transition:opacity .2s ease;
+    }
+    .mobile-overlay.open{ opacity:1; pointer-events:auto; }
+
+    .mobile-sheet{
+      position:absolute; top:env(safe-area-inset-top,0); left:0; right:0;
+      background:#fff; color:#0b43a3;
+      border-bottom-left-radius:16px; border-bottom-right-radius:16px;
+      padding:10px 14px calc(12px + env(safe-area-inset-bottom,0));
+      box-shadow:0 16px 40px rgba(0,0,0,.18);
+      transform:translateY(-16px); opacity:0;
+      transition:transform .22s ease, opacity .22s ease;
+      max-height:80dvh; overflow:auto;
+    }
+    .mobile-overlay.open .mobile-sheet{ transform:translateY(0); opacity:1; }
+
+    .mobile-topbar{ display:flex; align-items:center; justify-content:space-between; height:56px; }
+    .mobile-topbar .title{ font-family:'Playfair Display',serif; font-size:22px; color:#0b43a3; margin:0; }
+    .btn-close{ width:44px; height:44px; border:0; background:transparent; border-radius:10px; }
+    .btn-close:focus-visible{ outline:2px solid #0b43a3; outline-offset:2px; }
+
+    .mobile-links{ display:flex; flex-direction:column; gap:6px; padding:6px 2px 10px; }
+    .mobile-links a{
+      display:block; padding:16px 12px; border-radius:12px;
+      font-size:18px; color:#0b43a3; text-decoration:none; font-weight:600;
+    }
+    .mobile-links a:hover{ background:#eef4ff; }
+    .mobile-divider{ height:1px; background:#e6eefc; margin:8px 0 4px; }
+
+    /* ===== Hero ===== */
+    .hero {
+      position: relative;
+      margin-top: 70px;               /* clears fixed header */
+      min-height: 110vh;
+      background: url('images/landing page.jpg') center/cover fixed no-repeat;
+      display: flex; flex-direction: column; justify-content: flex-start; align-items: center;
+      padding-top: 80px; /* move content up */
+      color: white; text-align: center;
+    }
+    .hero::before { content: ""; position: absolute; inset: 0; background: rgba(0,0,0,0.45); z-index: 0; }
+    .hero > * { position: relative; z-index: 1; }
+
+    .hero-top{
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      margin-bottom: 30px; /* tighter gap above read more */
+    }
+
+    .logo-badge {
+      background: white; border-radius: 50%; padding: 20px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+      margin-bottom: 20px;
+      width: 220px; height: 220px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .logo-badge img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+    .tagline { font-size: clamp(22px, 3vw, 36px); font-weight: 700; text-shadow: 0 2px 5px rgba(0,0,0,0.3); margin-bottom: 0; }
+
+    /* Read More as text with arrow */
+    .read-more-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 18px;
+      font-weight: 600;
+      color: #ffffff;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      margin-top: 16px;
+    }
+    .read-more-link:hover { color: #dbe8ff; }
+    .read-more-link .arrow { transition: transform .2s ease; }
+    .read-more-link:hover .arrow { transform: translateX(4px); }
+
+    @media (max-width: 900px) {
+      .hero { background-attachment: scroll; }
+    }
+
+    @media (max-width: 860px){
+      nav.primary{ display:none; }
+      .nav-toggle{ display:flex; }
+    }
+
+    .sr-only{ position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <a class="brand" href="index.html" aria-label="Simply Med home">
+      <img class="brand-mark" src="images/simply med logo.png" alt="">
+      <span class="brand-text">Simply Med</span>
+    </a>
+
+    <!-- Desktop nav -->
+    <nav class="primary" aria-label="Primary">
+      <a href="index.html" aria-current="page">Home</a>
+      <a href="about.html">About Us</a>
+      <a href="events.html">Events</a>
+      <a href="blogs.html">Blogs</a>
+      <a href="contact.html">Contact Us</a>
+    </nav>
+
+    <!-- Mobile menu button -->
+    <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="mobileOverlay" aria-label="Open menu">
+      <svg id="iconHamburger" width="26" height="26" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M3 6h18M3 12h18M3 18h18" stroke="#0b43a3" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+      <svg id="iconClose" width="26" height="26" viewBox="0 0 24 24" aria-hidden="true" style="display:none">
+        <path d="M6 6l12 12M18 6l-12 12" stroke="#0b43a3" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+      <span class="sr-only">Menu</span>
+    </button>
+  </header>
+
+  <!-- Top-sheet Mobile Menu -->
+  <div class="mobile-overlay" id="mobileOverlay" aria-hidden="true">
+    <div class="mobile-sheet" role="dialog" aria-modal="true" aria-labelledby="mobileMenuTitle">
+      <div class="mobile-topbar">
+        <h2 id="mobileMenuTitle" class="title">Menu</h2>
+        <button class="btn-close" id="btnClose" aria-label="Close menu">
+          <svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M6 6l12 12M18 6l-12 12" stroke="#0b43a3" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+      <div class="mobile-divider"></div>
+      <nav class="mobile-links" aria-label="Mobile Primary">
+        <a href="index.html" aria-current="page">Home</a>
+        <a href="about.html">About Us</a>
+        <a href="events.html">Events</a>
+        <a href="blogs.html">Blogs</a>
+        <a href="contact.html">Contact Us</a>
+      </nav>
+    </div>
+  </div>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-top">
+      <div class="logo-badge">
+        <img src="images/simply med logo.png" alt="Simply Med Logo">
+      </div>
+      <div class="tagline">Encourage, Educate. Explore.</div>
+    </div>
+
+    <a class="read-more-link" href="about.html">
+      Read more
+      <svg class="arrow" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </a>
+  </section>
+
+  <script>
+    // Mobile top-sheet interactions
+    (function(){
+      const toggle = document.getElementById('navToggle');
+      const overlay = document.getElementById('mobileOverlay');
+      const btnClose = document.getElementById('btnClose');
+      const iconHamburger = document.getElementById('iconHamburger');
+      const iconClose = document.getElementById('iconClose');
+      let lastFocus = null;
+
+      function openMenu(){
+        lastFocus = document.activeElement;
+        overlay.classList.add('open');
+        overlay.setAttribute('aria-hidden','false');
+        toggle.setAttribute('aria-expanded','true');
+        iconHamburger.style.display='none';
+        iconClose.style.display='block';
+        document.body.style.overflow='hidden';
+        const first = overlay.querySelector('.mobile-links a');
+        if(first) first.focus();
+      }
+      function closeMenu(){
+        overlay.classList.remove('open');
+        overlay.setAttribute('aria-hidden','true');
+        toggle.setAttribute('aria-expanded','false');
+        iconHamburger.style.display='block';
+        iconClose.style.display='none';
+        document.body.style.overflow='';
+        if (lastFocus) lastFocus.focus();
+      }
+
+      toggle.addEventListener('click', () => overlay.classList.contains('open') ? closeMenu() : openMenu());
+      btnClose.addEventListener('click', closeMenu);
+      overlay.addEventListener('click', (e) => { if (e.target === overlay) closeMenu(); });
+      overlay.addEventListener('click', (e) => { if (e.target.tagName === 'A') closeMenu(); });
+      window.addEventListener('keydown', (e) => { if (e.key === 'Escape' && overlay.classList.contains('open')) closeMenu(); });
+      window.matchMedia('(min-width: 861px)').addEventListener('change', e => { if(e.matches) closeMenu(); });
+    })();
+  </script>
+</body>
+</html>
