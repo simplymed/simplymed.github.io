@@ -6,7 +6,10 @@
   <title>Contact Us | Simply Med</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
   <style>
-    :root { --link-blue:#053eb0; }
+    :root { 
+      --link-blue:#053eb0; 
+      --icon-blue:#6EC6FF; /* light blue for contact icons */
+    }
     * { box-sizing:border-box; }
     html, body { height:100%; }
     body { margin:0; font-family:'Inter',sans-serif; color:#fff; }
@@ -106,7 +109,16 @@
     .icons{ display:flex; gap:28px; margin:0 0 80px 0; }
     .icons a{ display:inline-flex; width:72px; height:72px; border-radius:50%; transition:transform .15s ease; outline:none; }
     .icons a:hover,.icons a:focus-visible{ transform:scale(1.06); }
-    .signature{ color:#fff; font-size:22px; line-height:1.6; text-shadow:0 2px 12px rgba(0,0,0,.35); }
+
+    .signature{
+      font-family:'Inter', sans-serif !important; /* force match to body font */
+      font-weight:400;
+      color:#fff;
+      font-size:22px;
+      line-height:1.6;
+      text-shadow:0 2px 12px rgba(0,0,0,.35);
+    }
+
     .heart-image{ width:400px; max-width:48vw; height:auto; margin-right:20px; filter:drop-shadow(0 8px 32px rgba(0,0,0,.35)); }
 
     /* ===== Accessibility: reduce motion ===== */
@@ -197,16 +209,10 @@
           <h1>Contact Us</h1>
 
           <div class="icons">
-            <!-- Email (PURPLE) -->
+            <!-- Email -->
             <a href="mailto:simplymedd.org@gmail.com" aria-label="Email">
               <svg width="72" height="72" viewBox="0 0 72 72" role="img" aria-hidden="true">
-                <defs>
-                  <linearGradient id="emailGrad" x1="0" y1="0" x2="1" y2="1">
-                    <stop offset="0%" stop-color="#B57EDC"/>
-                    <stop offset="100%" stop-color="#6A0DAD"/>
-                  </linearGradient>
-                </defs>
-                <circle cx="36" cy="36" r="36" fill="url(#emailGrad)"/>
+                <circle cx="36" cy="36" r="36" fill="var(--icon-blue)"/>
                 <path d="M17 24h38a2.5 2.5 0 0 1 2.5 2.5v19a2.5 2.5 0 0 1-2.5 2.5H17a2.5 2.5 0 0 1-2.5-2.5v-19A2.5 2.5 0 0 1 17 24zm0 2.5l19 11.5L55 26.5"
                       fill="none" stroke="#FFFFFF" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
@@ -215,16 +221,7 @@
             <!-- Instagram -->
             <a href="https://www.instagram.com/simply.medd/" target="_blank" rel="noopener" aria-label="Instagram">
               <svg width="72" height="72" viewBox="0 0 72 72" role="img" aria-hidden="true">
-                <defs>
-                  <radialGradient id="igGrad" cx="35%" cy="30%" r="80%">
-                    <stop offset="0%" stop-color="#FEDA75"/>
-                    <stop offset="35%" stop-color="#FA7E1E"/>
-                    <stop offset="65%" stop-color="#D62976"/>
-                    <stop offset="85%" stop-color="#962FBF"/>
-                    <stop offset="100%" stop-color="#4F5BD5"/>
-                  </radialGradient>
-                </defs>
-                <circle cx="36" cy="36" r="36" fill="url(#igGrad)"/>
+                <circle cx="36" cy="36" r="36" fill="var(--icon-blue)"/>
                 <g fill="none" stroke="#FFFFFF" stroke-width="3.4" transform="scale(1.15) translate(-5.4 -5.4)">
                   <rect x="23" y="23" width="26" height="26" rx="7" ry="7"/>
                   <circle cx="36" cy="36" r="7"/>
@@ -236,7 +233,7 @@
             <!-- LinkedIn -->
             <a href="https://www.linkedin.com/company/simply-med/" target="_blank" rel="noopener" aria-label="LinkedIn">
               <svg width="72" height="72" viewBox="0 0 72 72" role="img" aria-hidden="true">
-                <circle cx="36" cy="36" r="36" fill="#0A66C2"/>
+                <circle cx="36" cy="36" r="36" fill="var(--icon-blue)"/>
                 <g transform="scale(1.15) translate(-5.4 -5.4)">
                   <rect x="22" y="31" width="6" height="19" fill="#FFFFFF" rx="1"/>
                   <circle cx="25" cy="25" r="3.5" fill="#FFFFFF"/>
@@ -300,3 +297,4 @@
   </script>
 </body>
 </html>
+
